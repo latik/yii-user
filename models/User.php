@@ -23,6 +23,22 @@
 class User extends CActiveRecord
 {
 
+    public function init()
+    {
+        parent::init();
+
+        // Set language
+        if (!isset(Yii::app()->request->cookies['lang'])){
+            $language = (Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']))?:'en_US';
+            $cookie = new CHttpCookie('lang', $language);
+            $cookie->expire = time() + 60 * 60 * 24 * 30;
+            Yii::app()->request->cookies['lang'] = $cookie;
+        } else {
+            $language = (string)Yii::app()->request->cookies['lang'];
+        }
+        Yii::app()->setLanguage($language);
+    }
+
     /**
      * Returns the static model of the specified AR class.
      * @param  string $className active record class name.
